@@ -5,34 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Web Vulnerability Scanner</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f7f8fb; }
+    .hero { margin-top: 30px; margin-bottom: 30px; }
+    .card { border-radius: 12px; }
+  </style>
 </head>
-<body class="bg-light">
-<div class="container py-5">
-  <h1 class="mb-4 text-center">🛡 Web Vulnerability Scanner</h1>
-  <div class="card shadow-lg p-4 mb-5 bg-white rounded">
-    <form action="/start" method="post" class="row g-3">
-      <div class="col-md-8">
-        <input type="url" name="start_url" placeholder="https://example.com" class="form-control" required>
-      </div>
-      <div class="col-md-2">
-        <input type="number" name="max_pages" value="50" min="1" class="form-control">
-      </div>
-      <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100">Start Scan</button>
-      </div>
-    </form>
+<body>
+<div class="container">
+  <div class="hero text-center">
+    <h1 class="display-5">🛡 Web Vulnerability Scanner</h1>
+    <p class="text-muted">Scan your own web apps for XSS, SQLi, and missing CSRF tokens.</p>
   </div>
-  <h3 class="mb-3">Active Scans</h3>
-  <ul class="list-group">
-    {% for sid, info in scans.items() %}
-      <li class="list-group-item d-flex justify-content-between align-items-center">
-        <a href="/scan/{{sid}}">Scan {{sid}}</a>
-        <span class="badge bg-{{ 'success' if info['status']=='done' else 'warning' }}">{{info['status']}}</span>
-      </li>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <form action="/start" method="post" class="row g-2">
+        <div class="col-md-8">
+          <input type="url" class="form-control form-control-lg" name="start_url" placeholder="https://juice-shop.herokuapp.com" required>
+        </div>
+        <div class="col-md-2">
+          <input type="number" class="form-control form-control-lg" name="max_pages" value="50" min="1">
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-primary btn-lg w-100">Start Scan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <h4>Active Scans</h4>
+  <ul class="list-group mb-5">
+    {% if scans %}
+      {% for sid, info in scans.items() %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <a href="/scan/{{sid}}">Scan {{sid}}</a>
+            <small class="text-muted ms-2">({{info['start_url']}})</small>
+          </div>
+          <div>
+            {% if info['status']=='done' %}
+              <span class="badge bg-success">done</span>
+            {% else %}
+              <span class="badge bg-warning text-dark">running</span>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
     {% else %}
-      <li class="list-group-item">No scans yet</li>
-    {% endfor %}
+      <li class="list-group-item">No scans started yet.</li>
+    {% endif %}
   </ul>
+
+  <footer class="text-center text-muted mb-4">
+    <small>Only scan systems you own or have explicit permission to test.</small>
+  </footer>
 </div>
 </body>
 </html>
