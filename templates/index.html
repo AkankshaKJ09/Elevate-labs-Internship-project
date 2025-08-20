@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web Vulnerability Scanner</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+  <h1 class="mb-4 text-center">🛡 Web Vulnerability Scanner</h1>
+  <div class="card shadow-lg p-4 mb-5 bg-white rounded">
+    <form action="/start" method="post" class="row g-3">
+      <div class="col-md-8">
+        <input type="url" name="start_url" placeholder="https://example.com" class="form-control" required>
+      </div>
+      <div class="col-md-2">
+        <input type="number" name="max_pages" value="50" min="1" class="form-control">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Start Scan</button>
+      </div>
+    </form>
+  </div>
+  <h3 class="mb-3">Active Scans</h3>
+  <ul class="list-group">
+    {% for sid, info in scans.items() %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <a href="/scan/{{sid}}">Scan {{sid}}</a>
+        <span class="badge bg-{{ 'success' if info['status']=='done' else 'warning' }}">{{info['status']}}</span>
+      </li>
+    {% else %}
+      <li class="list-group-item">No scans yet</li>
+    {% endfor %}
+  </ul>
+</div>
+</body>
+</html>
