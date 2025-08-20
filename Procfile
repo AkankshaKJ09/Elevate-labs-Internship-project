@@ -1,1 +1,1 @@
-web: python web_vuln_scanner.py
+web: gunicorn web_vuln_scanner:app
